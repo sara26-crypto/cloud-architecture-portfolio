@@ -1,0 +1,504 @@
+{
+  "Metadata": {
+    "AWSToolsMetrics": {
+      "IaC_Generator": "arn:aws:cloudformation:us-east-2:767397794296:generatedTemplate/d6351eaf-5ac2-4763-95c9-94db052f1e69"
+    }
+  },
+  "Parameters": {
+    "KeyName": {
+      "Default": "ohio",
+      "Type": "String",
+      "Description": "Name of an existing EC2 KeyPair to enable SSH access"
+    }
+  },
+  "Resources": {
+    "EC2CustomerGateway": {
+      "UpdateReplacePolicy": "Retain",
+      "Type": "AWS::EC2::CustomerGateway",
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "Type": "ipsec.1",
+        "IpAddress": "100.54.241.138",
+        "BgpAsn": 65000,
+        "Tags": [
+          {
+            "Value": "onpremawsvpn",
+            "Key": "project"
+          },
+          {
+            "Value": "dc-network-cgw",
+            "Key": "Name"
+          }
+        ]
+      }
+    },
+    "EC2Subnet": {
+      "UpdateReplacePolicy": "Retain",
+      "Type": "AWS::EC2::Subnet",
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "MapPublicIpOnLaunch": false,
+        "EnableDns64": false,
+        "VpcId": "vpc-05c47a5c274dfe9d0",
+        "AvailabilityZoneId": "use2-az1",
+        "PrivateDnsNameOptionsOnLaunch": {
+          "EnableResourceNameDnsARecord": false,
+          "HostnameType": "ip-name",
+          "EnableResourceNameDnsAAAARecord": false
+        },
+        "AvailabilityZone": "us-east-2a",
+        "CidrBlock": "10.0.0.0/24",
+        "Ipv6Native": false,
+        "Tags": [
+          {
+            "Value": "aws-private-subnet",
+            "Key": "Name"
+          },
+          {
+            "Value": "onpremawsvpn",
+            "Key": "project"
+          }
+        ]
+      }
+    },
+    "EC2SecurityGroup": {
+      "UpdateReplacePolicy": "Retain",
+      "Type": "AWS::EC2::SecurityGroup",
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "GroupDescription": "default VPC security group",
+        "GroupName": "default",
+        "VpcId": "vpc-05c47a5c274dfe9d0",
+        "SecurityGroupIngress": [
+          {
+            "SourceSecurityGroupId": "sg-0468314ce54138028",
+            "IpProtocol": "-1",
+            "SourceSecurityGroupOwnerId": "767397794296"
+          }
+        ],
+        "SecurityGroupEgress": [
+          {
+            "CidrIp": "0.0.0.0/0",
+            "IpProtocol": "-1"
+          }
+        ]
+      }
+    },
+    "EC2SubnetNetworkAclAssociation": {
+      "UpdateReplacePolicy": "Retain",
+      "Type": "AWS::EC2::SubnetNetworkAclAssociation",
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "NetworkAclId": "acl-0aba12b0c37e0a93e",
+        "SubnetId": "subnet-0e7b7be7bc9d5d468"
+      }
+    },
+    "EC2VPCGatewayAttachmentVGW": {
+      "UpdateReplacePolicy": "Retain",
+      "Type": "AWS::EC2::VPCGatewayAttachment",
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "VpcId": "vpc-05c47a5c274dfe9d0",
+        "VpnGatewayId": "vgw-012f692ef0d5e4fcb"
+      }
+    },
+    "EC2VolumeAttachment": {
+      "UpdateReplacePolicy": "Retain",
+      "Type": "AWS::EC2::VolumeAttachment",
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "VolumeId": "vol-0b2be3cc6f3ced625",
+        "InstanceId": "i-0c97e39260de6f841",
+        "Device": "/dev/xvda",
+        "EbsCardIndex": 0
+      }
+    },
+    "ResourceGroupsGroupOnpremawsvpnohio": {
+      "UpdateReplacePolicy": "Retain",
+      "Type": "AWS::ResourceGroups::Group",
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "Tags": [
+          {
+            "Value": "onpremawsvpn",
+            "Key": "project"
+          }
+        ],
+        "ResourceQuery": {
+          "Query": {
+            "TagFilters": [
+              {
+                "Values": [
+                  "onpremawsvpn"
+                ],
+                "Key": "project"
+              }
+            ],
+            "ResourceTypeFilters": [
+              "AWS::AllSupported"
+            ]
+          },
+          "Type": "TAG_FILTERS_1_0"
+        },
+        "Name": "onpremawsvpnohio"
+      }
+    },
+    "EC2RouteMA": {
+      "UpdateReplacePolicy": "Retain",
+      "Type": "AWS::EC2::Route",
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "RouteTableId": "rtb-0d3cbe4ea7f8e15fe",
+        "DestinationCidrBlock": "10.0.0.0/16",
+        "GatewayId": "local",
+        "VpcEndpointId": "local"
+      }
+    },
+    "EC2RouteTableBy": {
+      "UpdateReplacePolicy": "Retain",
+      "Type": "AWS::EC2::RouteTable",
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "VpcId": "vpc-05c47a5c274dfe9d0",
+        "Tags": [
+          {
+            "Value": "onpremawsvpn",
+            "Key": "project"
+          },
+          {
+            "Value": "aws-private-rt",
+            "Key": "Name"
+          }
+        ]
+      }
+    },
+    "EC2Instance": {
+      "UpdateReplacePolicy": "Retain",
+      "Type": "AWS::EC2::Instance",
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "Tenancy": "default",
+        "PrivateIpAddress": "10.0.0.39",
+        "MetadataOptions": {
+          "HttpPutResponseHopLimit": 2,
+          "HttpProtocolIpv6": "disabled",
+          "HttpTokens": "required",
+          "InstanceMetadataTags": "disabled",
+          "HttpEndpoint": "enabled"
+        },
+        "InstanceInitiatedShutdownBehavior": "stop",
+        "BlockDeviceMappings": [
+          {
+            "Ebs": {
+              "SnapshotId": "snap-0463e4328acca0631",
+              "VolumeType": "gp3",
+              "Iops": 3000,
+              "VolumeSize": 8,
+              "Encrypted": false,
+              "DeleteOnTermination": true
+            },
+            "DeviceName": "/dev/xvda"
+          }
+        ],
+        "PrivateDnsNameOptions": {
+          "EnableResourceNameDnsARecord": false,
+          "HostnameType": "ip-name",
+          "EnableResourceNameDnsAAAARecord": false
+        },
+        "SecurityGroupIds": [
+          "sg-0cda9c8b80ab39e69"
+        ],
+        "EbsOptimized": true,
+        "DisableApiTermination": false,
+        "SourceDestCheck": true,
+        "PlacementGroupName": "",
+        "NetworkInterfaces": [
+          {
+            "Ipv6Addresses": [],
+            "SecondaryPrivateIpAddressCount": 0,
+            "NetworkInterfaceId": "eni-06518a95a4630dfc7",
+            "DeviceIndex": "0"
+          }
+        ],
+        "ImageId": "ami-06475e8f54266e38e",
+        "InstanceType": "t3.micro",
+        "Monitoring": false,
+        "Tags": [
+          {
+            "Value": "ec2-a",
+            "Key": "Name"
+          },
+          {
+            "Value": "onpremawsvpn",
+            "Key": "project"
+          }
+        ],
+        "CreditSpecification": {
+          "CPUCredits": "unlimited"
+        }
+      }
+    },
+    "EC2VPNConnection": {
+      "UpdateReplacePolicy": "Retain",
+      "Type": "AWS::EC2::VPNConnection",
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "EnableAcceleration": false,
+        "Type": "ipsec.1",
+        "RemoteIpv4NetworkCidr": "0.0.0.0/0",
+        "VpnTunnelOptionsSpecifications": [
+          {
+            "Phase2EncryptionAlgorithms": [],
+            "Phase2DHGroupNumbers": [],
+            "Phase2IntegrityAlgorithms": [],
+            "Phase1IntegrityAlgorithms": [],
+            "TunnelInsideCidr": "169.254.36.236/30",
+            "IKEVersions": [],
+            "LogOptions": {
+              "CloudwatchLogOptions": {
+                "BgpLogEnabled": false,
+                "LogEnabled": false
+              }
+            },
+            "Phase1EncryptionAlgorithms": [],
+            "Phase1DHGroupNumbers": [],
+            "EnableTunnelLifecycleControl": false
+          },
+          {
+            "Phase2EncryptionAlgorithms": [],
+            "Phase2DHGroupNumbers": [],
+            "Phase2IntegrityAlgorithms": [],
+            "Phase1IntegrityAlgorithms": [],
+            "TunnelInsideCidr": "169.254.152.228/30",
+            "IKEVersions": [],
+            "LogOptions": {
+              "CloudwatchLogOptions": {
+                "BgpLogEnabled": false,
+                "LogEnabled": false
+              }
+            },
+            "Phase1EncryptionAlgorithms": [],
+            "Phase1DHGroupNumbers": [],
+            "EnableTunnelLifecycleControl": false
+          }
+        ],
+        "TunnelBandwidth": "standard",
+        "CustomerGatewayId": "cgw-08a97dd68e33f91ae",
+        "LocalIpv4NetworkCidr": "0.0.0.0/0",
+        "VpnGatewayId": "vgw-012f692ef0d5e4fcb",
+        "OutsideIpAddressType": "PublicIpv4",
+        "StaticRoutesOnly": true,
+        "TunnelInsideIpVersion": "ipv4",
+        "Tags": [
+          {
+            "Value": "onpremawsvpn",
+            "Key": "project"
+          },
+          {
+            "Value": "aws-dc-vpn",
+            "Key": "Name"
+          }
+        ]
+      }
+    },
+    "EC2SecurityGroupOH": {
+      "UpdateReplacePolicy": "Retain",
+      "Type": "AWS::EC2::SecurityGroup",
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "GroupDescription": "aws-app-sg",
+        "GroupName": "ec2-a-sg",
+        "VpcId": "vpc-05c47a5c274dfe9d0",
+        "SecurityGroupIngress": [
+          {
+            "CidrIp": "192.168.0.0/16",
+            "IpProtocol": "tcp",
+            "FromPort": 22,
+            "ToPort": 22
+          },
+          {
+            "CidrIp": "192.168.0.0/16",
+            "IpProtocol": "icmp",
+            "FromPort": -1,
+            "ToPort": -1
+          }
+        ],
+        "SecurityGroupEgress": [
+          {
+            "CidrIp": "0.0.0.0/0",
+            "IpProtocol": "-1"
+          }
+        ]
+      }
+    },
+    "EC2Volume": {
+      "UpdateReplacePolicy": "Retain",
+      "Type": "AWS::EC2::Volume",
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "MultiAttachEnabled": false,
+        "SnapshotId": "snap-0463e4328acca0631",
+        "VolumeType": "gp3",
+        "Encrypted": false,
+        "Size": 8,
+        "AutoEnableIO": true,
+        "AvailabilityZoneId": "use2-az1",
+        "AvailabilityZone": "us-east-2a",
+        "Throughput": 125,
+        "Iops": 3000,
+        "Tags": []
+      }
+    },
+    "EC2DHCPOptions": {
+      "UpdateReplacePolicy": "Retain",
+      "Type": "AWS::EC2::DHCPOptions",
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "DomainName": "us-east-2.compute.internal",
+        "DomainNameServers": [
+          "AmazonProvidedDNS"
+        ],
+        "Tags": []
+      }
+    },
+    "EC2Route": {
+      "UpdateReplacePolicy": "Retain",
+      "Type": "AWS::EC2::Route",
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "RouteTableId": "rtb-05c9791a158563cda",
+        "DestinationCidrBlock": "10.0.0.0/16",
+        "GatewayId": "local",
+        "VpcEndpointId": "local"
+      }
+    },
+    "EC2VPCCidrBlock": {
+      "UpdateReplacePolicy": "Retain",
+      "Type": "AWS::EC2::VPCCidrBlock",
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "VpcId": "vpc-05c47a5c274dfe9d0",
+        "CidrBlock": "10.0.0.0/16"
+      }
+    },
+    "EC2VPC": {
+      "UpdateReplacePolicy": "Retain",
+      "Type": "AWS::EC2::VPC",
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "CidrBlock": "10.0.0.0/16",
+        "EnableDnsSupport": true,
+        "InstanceTenancy": "default",
+        "EnableDnsHostnames": false,
+        "Tags": [
+          {
+            "Value": "onpremawsvpn",
+            "Key": "project"
+          },
+          {
+            "Value": "aws-vpc",
+            "Key": "Name"
+          }
+        ]
+      }
+    },
+    "EC2VPNGateway": {
+      "UpdateReplacePolicy": "Retain",
+      "Type": "AWS::EC2::VPNGateway",
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "Type": "ipsec.1",
+        "AmazonSideAsn": 64512,
+        "Tags": [
+          {
+            "Value": "onpremawsvpn",
+            "Key": "project"
+          },
+          {
+            "Value": "aws-network-vgw",
+            "Key": "Name"
+          }
+        ]
+      }
+    },
+    "EC2VPCDHCPOptionsAssociation": {
+      "UpdateReplacePolicy": "Retain",
+      "Type": "AWS::EC2::VPCDHCPOptionsAssociation",
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "VpcId": "vpc-05c47a5c274dfe9d0",
+        "DhcpOptionsId": "dopt-0834181880a2b3964"
+      }
+    },
+    "EC2NetworkInterface": {
+      "UpdateReplacePolicy": "Retain",
+      "Type": "AWS::EC2::NetworkInterface",
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "SourceDestCheck": true,
+        "Description": "",
+        "PrivateIpAddresses": [
+          {
+            "PrivateIpAddress": "10.0.0.39",
+            "Primary": true
+          }
+        ],
+        "Ipv6PrefixCount": 0,
+        "Ipv4Prefixes": [],
+        "Ipv4PrefixCount": 0,
+        "GroupSet": [
+          "sg-0cda9c8b80ab39e69"
+        ],
+        "Ipv6Prefixes": [],
+        "SubnetId": "subnet-0e7b7be7bc9d5d468",
+        "Tags": []
+      }
+    },
+    "EC2RouteTable": {
+      "UpdateReplacePolicy": "Retain",
+      "Type": "AWS::EC2::RouteTable",
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "VpcId": "vpc-05c47a5c274dfe9d0"
+      }
+    },
+    "EC2VPNConnectionRoute": {
+      "UpdateReplacePolicy": "Retain",
+      "Type": "AWS::EC2::VPNConnectionRoute",
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "DestinationCidrBlock": "192.168.0.0/16",
+        "VpnConnectionId": "vpn-0241990615a553913"
+      }
+    },
+    "EC2SubnetRouteTableAssociation": {
+      "UpdateReplacePolicy": "Retain",
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "RouteTableId": "rtb-0d3cbe4ea7f8e15fe",
+        "SubnetId": "subnet-0e7b7be7bc9d5d468"
+      }
+    },
+    "EC2NetworkAcl": {
+      "UpdateReplacePolicy": "Retain",
+      "Type": "AWS::EC2::NetworkAcl",
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "VpcId": "vpc-05c47a5c274dfe9d0",
+        "Tags": []
+      }
+    },
+    "EC2RouteLy": {
+      "UpdateReplacePolicy": "Retain",
+      "Type": "AWS::EC2::Route",
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "RouteTableId": "rtb-0d3cbe4ea7f8e15fe",
+        "DestinationCidrBlock": "192.168.0.0/16",
+        "GatewayId": "vgw-012f692ef0d5e4fcb",
+        "VpcEndpointId": "vgw-012f692ef0d5e4fcb"
+      }
+    }
+  }
+}

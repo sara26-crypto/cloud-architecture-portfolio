@@ -1,0 +1,483 @@
+---
+Metadata:
+  AWSToolsMetrics:
+    IaC_Generator: "arn:aws:cloudformation:us-east-1:767397794296:generatedTemplate/ff17497f-3425-4786-9268-93d5874d466d"
+Parameters:
+  KeyName:
+    Default: "nvirginia"
+    Type: "String"
+    Description: "Name of an existing EC2 KeyPair to enable SSH access"
+  KeyName2:
+    Default: "nvirginia"
+    Type: "String"
+    Description: "Name of an existing EC2 KeyPair to enable SSH access"
+Resources:
+  EC2RouteYb:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::EC2::Route"
+    DeletionPolicy: "Retain"
+    Properties:
+      RouteTableId: "rtb-0d2d17a54362ff142"
+      DestinationCidrBlock: "10.0.0.0/16"
+      NetworkInterfaceId: "eni-06a72b436eee595fa"
+      InstanceId: "i-0d0d0f7a2af8aa665"
+  EC2VPCGatewayAttachmentIGW:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::EC2::VPCGatewayAttachment"
+    DeletionPolicy: "Retain"
+    Properties:
+      InternetGatewayId: "igw-078d0d79d4b10b69f"
+      VpcId: "vpc-0c03e4f5b6b45df24"
+  EC2Subnet:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::EC2::Subnet"
+    DeletionPolicy: "Retain"
+    Properties:
+      MapPublicIpOnLaunch: false
+      EnableDns64: false
+      VpcId: "vpc-0c03e4f5b6b45df24"
+      AvailabilityZoneId: "use1-az6"
+      PrivateDnsNameOptionsOnLaunch:
+        EnableResourceNameDnsARecord: false
+        HostnameType: "ip-name"
+        EnableResourceNameDnsAAAARecord: false
+      AvailabilityZone: "us-east-1a"
+      CidrBlock: "192.168.100.0/24"
+      Ipv6Native: false
+      Tags:
+      - Value: "onpremawsvpn"
+        Key: "project"
+      - Value: "dc-private-subnet"
+        Key: "Name"
+  EC2SecurityGroup:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::EC2::SecurityGroup"
+    DeletionPolicy: "Retain"
+    Properties:
+      GroupDescription: "ec2-b-sg"
+      GroupName: "ec2-b-sg"
+      VpcId: "vpc-0c03e4f5b6b45df24"
+      SecurityGroupIngress:
+      - CidrIp: "192.168.0.0/16"
+        IpProtocol: "tcp"
+        FromPort: 22
+        ToPort: 22
+      - CidrIp: "10.0.0.0/16"
+        IpProtocol: "icmp"
+        FromPort: -1
+        ToPort: -1
+      SecurityGroupEgress:
+      - CidrIp: "0.0.0.0/0"
+        IpProtocol: "-1"
+  EC2SecurityGroupQ1:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::EC2::SecurityGroup"
+    DeletionPolicy: "Retain"
+    Properties:
+      GroupDescription: "vpn-server-sg"
+      GroupName: "vpn-server-sg"
+      VpcId: "vpc-0c03e4f5b6b45df24"
+      SecurityGroupIngress:
+      - CidrIp: "0.0.0.0/0"
+        IpProtocol: "tcp"
+        FromPort: 22
+        ToPort: 22
+      - CidrIp: "0.0.0.0/0"
+        IpProtocol: "icmp"
+        FromPort: -1
+        ToPort: -1
+      SecurityGroupEgress:
+      - CidrIp: "0.0.0.0/0"
+        IpProtocol: "-1"
+  EC2SubnetNetworkAclAssociation:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::EC2::SubnetNetworkAclAssociation"
+    DeletionPolicy: "Retain"
+    Properties:
+      NetworkAclId: "acl-04f181a36958b265c"
+      SubnetId: "subnet-08e5f4973b2c5bb1e"
+  EC2VolumeAttachmentB7:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::EC2::VolumeAttachment"
+    DeletionPolicy: "Retain"
+    Properties:
+      VolumeId: "vol-07da210e0a9db5f6a"
+      InstanceId: "i-06539f811d24d16a7"
+      Device: "/dev/xvda"
+      EbsCardIndex: 0
+  EC2SubnetA3:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::EC2::Subnet"
+    DeletionPolicy: "Retain"
+    Properties:
+      MapPublicIpOnLaunch: false
+      EnableDns64: false
+      VpcId: "vpc-0c03e4f5b6b45df24"
+      AvailabilityZoneId: "use1-az6"
+      PrivateDnsNameOptionsOnLaunch:
+        EnableResourceNameDnsARecord: false
+        HostnameType: "ip-name"
+        EnableResourceNameDnsAAAARecord: false
+      AvailabilityZone: "us-east-1a"
+      CidrBlock: "192.168.0.0/24"
+      Ipv6Native: false
+      Tags:
+      - Value: "onpremawsvpn"
+        Key: "project"
+      - Value: "dc-public-subnet"
+        Key: "Name"
+  ResourceGroupsGroupOnpremawsvpnnv:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::ResourceGroups::Group"
+    DeletionPolicy: "Retain"
+    Properties:
+      Tags:
+      - Value: "onpremawsvpn"
+        Key: "project"
+      ResourceQuery:
+        Query:
+          TagFilters:
+          - Values:
+            - "onpremawsvpn"
+            Key: "project"
+          ResourceTypeFilters:
+          - "AWS::AllSupported"
+        Type: "TAG_FILTERS_1_0"
+      Name: "onpremawsvpnnv"
+  EC2SecurityGroupIngress:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::EC2::SecurityGroupIngress"
+    DeletionPolicy: "Retain"
+    Properties:
+      CidrIp: "192.168.0.0/16"
+      GroupName: "ec2-b-sg"
+      IpProtocol: "tcp"
+      FromPort: 22
+      ToPort: 22
+      GroupId: "sg-04fdc8dba5ea9a1ea"
+  EC2SubnetRouteTableAssociationCE:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::EC2::SubnetRouteTableAssociation"
+    DeletionPolicy: "Retain"
+    Properties:
+      RouteTableId: "rtb-056eb31dec4969f2b"
+      SubnetId: "subnet-0f62f7fe5922b938d"
+  EC2VolumeAttachment:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::EC2::VolumeAttachment"
+    DeletionPolicy: "Retain"
+    Properties:
+      VolumeId: "vol-03410dc74499bd58b"
+      InstanceId: "i-0d0d0f7a2af8aa665"
+      Device: "/dev/xvda"
+      EbsCardIndex: 0
+  EC2Instance:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::EC2::Instance"
+    DeletionPolicy: "Retain"
+    Properties:
+      Tenancy: "default"
+      PrivateIpAddress: "192.168.100.50"
+      MetadataOptions:
+        HttpPutResponseHopLimit: 2
+        HttpProtocolIpv6: "disabled"
+        HttpTokens: "required"
+        InstanceMetadataTags: "disabled"
+        HttpEndpoint: "enabled"
+      InstanceInitiatedShutdownBehavior: "stop"
+      BlockDeviceMappings:
+      - Ebs:
+          SnapshotId: "snap-0bc9cf3f9e4893b60"
+          VolumeType: "gp3"
+          Iops: 3000
+          VolumeSize: 8
+          Encrypted: false
+          DeleteOnTermination: true
+        DeviceName: "/dev/xvda"
+      PrivateDnsNameOptions:
+        EnableResourceNameDnsARecord: false
+        HostnameType: "ip-name"
+        EnableResourceNameDnsAAAARecord: false
+      SecurityGroupIds:
+      - "sg-04fdc8dba5ea9a1ea"
+      EbsOptimized: true
+      DisableApiTermination: false
+      SourceDestCheck: true
+      PlacementGroupName: ""
+      NetworkInterfaces:
+      - Ipv6Addresses: []
+        SecondaryPrivateIpAddressCount: 0
+        NetworkInterfaceId: "eni-02b488e3ef851d919"
+        DeviceIndex: "0"
+      ImageId: "ami-0332d564d76dbd8d6"
+      InstanceType: "t3.micro"
+      Monitoring: false
+      Tags:
+      - Value: "ec2-b"
+        Key: "Name"
+      - Value: "onpremawsvpn"
+        Key: "project"
+      CreditSpecification:
+        CPUCredits: "unlimited"
+  EC2SubnetNetworkAclAssociationBl:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::EC2::SubnetNetworkAclAssociation"
+    DeletionPolicy: "Retain"
+    Properties:
+      NetworkAclId: "acl-04f181a36958b265c"
+      SubnetId: "subnet-0f62f7fe5922b938d"
+  EC2Volume:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::EC2::Volume"
+    DeletionPolicy: "Retain"
+    Properties:
+      MultiAttachEnabled: false
+      SnapshotId: "snap-0bc9cf3f9e4893b60"
+      VolumeType: "gp3"
+      Encrypted: false
+      Size: 8
+      AutoEnableIO: true
+      AvailabilityZoneId: "use1-az6"
+      AvailabilityZone: "us-east-1a"
+      Throughput: 125
+      Iops: 3000
+      Tags: []
+  EC2DHCPOptions:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::EC2::DHCPOptions"
+    DeletionPolicy: "Retain"
+    Properties:
+      DomainName: "ec2.internal"
+      DomainNameServers:
+      - "AmazonProvidedDNS"
+      Tags: []
+  EC2Route:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::EC2::Route"
+    DeletionPolicy: "Retain"
+    Properties:
+      GatewayId: "igw-078d0d79d4b10b69f"
+      RouteTableId: "rtb-056eb31dec4969f2b"
+      DestinationCidrBlock: "0.0.0.0/0"
+  EC2RouteTableJT:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::EC2::RouteTable"
+    DeletionPolicy: "Retain"
+    Properties:
+      VpcId: "vpc-0c03e4f5b6b45df24"
+      Tags:
+      - Value: "dc-private-rt"
+        Key: "Name"
+      - Value: "onpremawsvpn"
+        Key: "project"
+  EC2RouteTableBK:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::EC2::RouteTable"
+    DeletionPolicy: "Retain"
+    Properties:
+      VpcId: "vpc-0c03e4f5b6b45df24"
+  EC2InstanceHc:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::EC2::Instance"
+    DeletionPolicy: "Retain"
+    Properties:
+      Tenancy: "default"
+      PrivateIpAddress: "192.168.0.192"
+      MetadataOptions:
+        HttpPutResponseHopLimit: 2
+        HttpProtocolIpv6: "disabled"
+        HttpTokens: "required"
+        InstanceMetadataTags: "disabled"
+        HttpEndpoint: "enabled"
+      InstanceInitiatedShutdownBehavior: "stop"
+      BlockDeviceMappings:
+      - Ebs:
+          SnapshotId: "snap-0bc9cf3f9e4893b60"
+          VolumeType: "gp3"
+          Iops: 3000
+          VolumeSize: 8
+          Encrypted: false
+          DeleteOnTermination: true
+        DeviceName: "/dev/xvda"
+      PrivateDnsNameOptions:
+        EnableResourceNameDnsARecord: false
+        HostnameType: "ip-name"
+        EnableResourceNameDnsAAAARecord: false
+      SecurityGroupIds:
+      - "sg-0d2aa69bf6ad90e95"
+      EbsOptimized: true
+      DisableApiTermination: false
+      SourceDestCheck: false
+      PlacementGroupName: ""
+      NetworkInterfaces:
+      - Ipv6Addresses: []
+        SecondaryPrivateIpAddressCount: 0
+        NetworkInterfaceId: "eni-06a72b436eee595fa"
+        DeviceIndex: "0"
+      ImageId: "ami-0332d564d76dbd8d6"
+      InstanceType: "t3.micro"
+      Monitoring: false
+      Tags:
+      - Value: "vpn-server"
+        Key: "Name"
+      - Value: "onpremawsvpn"
+        Key: "project"
+      CreditSpecification:
+        CPUCredits: "unlimited"
+  EC2SecurityGroupT6:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::EC2::SecurityGroup"
+    DeletionPolicy: "Retain"
+    Properties:
+      GroupDescription: "default VPC security group"
+      GroupName: "default"
+      VpcId: "vpc-0c03e4f5b6b45df24"
+      SecurityGroupIngress:
+      - SourceSecurityGroupId: "sg-07982e4b834749d4e"
+        IpProtocol: "-1"
+        SourceSecurityGroupOwnerId: "767397794296"
+      SecurityGroupEgress:
+      - CidrIp: "0.0.0.0/0"
+        IpProtocol: "-1"
+  EC2RouteLI:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::EC2::Route"
+    DeletionPolicy: "Retain"
+    Properties:
+      RouteTableId: "rtb-0708cd4d346755fd5"
+      DestinationCidrBlock: "192.168.0.0/16"
+      GatewayId: "local"
+      VpcEndpointId: "local"
+  EC2VPCCidrBlock:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::EC2::VPCCidrBlock"
+    DeletionPolicy: "Retain"
+    Properties:
+      VpcId: "vpc-0c03e4f5b6b45df24"
+      CidrBlock: "192.168.0.0/16"
+  EC2NetworkInterfaceQi:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::EC2::NetworkInterface"
+    DeletionPolicy: "Retain"
+    Properties:
+      SourceDestCheck: false
+      Description: ""
+      PrivateIpAddresses:
+      - PrivateIpAddress: "192.168.0.192"
+        Primary: true
+      Ipv6PrefixCount: 0
+      Ipv4Prefixes: []
+      Ipv4PrefixCount: 0
+      GroupSet:
+      - "sg-0d2aa69bf6ad90e95"
+      Ipv6Prefixes: []
+      SubnetId: "subnet-0f62f7fe5922b938d"
+      Tags: []
+  EC2VPCDHCPOptionsAssociation:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::EC2::VPCDHCPOptionsAssociation"
+    DeletionPolicy: "Retain"
+    Properties:
+      VpcId: "vpc-0c03e4f5b6b45df24"
+      DhcpOptionsId: "dopt-06d18283f7ba527bb"
+  EC2VPC:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::EC2::VPC"
+    DeletionPolicy: "Retain"
+    Properties:
+      CidrBlock: "192.168.0.0/16"
+      EnableDnsSupport: true
+      InstanceTenancy: "default"
+      EnableDnsHostnames: false
+      Tags:
+      - Value: "onpremawsvpn"
+        Key: "project"
+      - Value: "dc-vpc"
+        Key: "Name"
+  EC2RouteBw:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::EC2::Route"
+    DeletionPolicy: "Retain"
+    Properties:
+      RouteTableId: "rtb-056eb31dec4969f2b"
+      DestinationCidrBlock: "192.168.0.0/16"
+      GatewayId: "local"
+      VpcEndpointId: "local"
+  EC2NetworkInterface:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::EC2::NetworkInterface"
+    DeletionPolicy: "Retain"
+    Properties:
+      SourceDestCheck: true
+      Description: ""
+      PrivateIpAddresses:
+      - PrivateIpAddress: "192.168.100.50"
+        Primary: true
+      Ipv6PrefixCount: 0
+      Ipv4Prefixes: []
+      Ipv4PrefixCount: 0
+      GroupSet:
+      - "sg-04fdc8dba5ea9a1ea"
+      Ipv6Prefixes: []
+      SubnetId: "subnet-08e5f4973b2c5bb1e"
+      Tags: []
+  EC2RouteTable:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::EC2::RouteTable"
+    DeletionPolicy: "Retain"
+    Properties:
+      VpcId: "vpc-0c03e4f5b6b45df24"
+      Tags:
+      - Value: "onpremawsvpn"
+        Key: "project"
+      - Value: "dc-public-rt"
+        Key: "Name"
+  EC2VolumeGm:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::EC2::Volume"
+    DeletionPolicy: "Retain"
+    Properties:
+      MultiAttachEnabled: false
+      SnapshotId: "snap-0bc9cf3f9e4893b60"
+      VolumeType: "gp3"
+      Encrypted: false
+      Size: 8
+      AutoEnableIO: true
+      AvailabilityZoneId: "use1-az6"
+      AvailabilityZone: "us-east-1a"
+      Throughput: 125
+      Iops: 3000
+      Tags: []
+  EC2InternetGateway:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::EC2::InternetGateway"
+    DeletionPolicy: "Retain"
+    Properties:
+      Tags:
+      - Value: "onpremawsvpn"
+        Key: "project"
+      - Value: "dc-igw"
+        Key: "Name"
+  EC2SubnetRouteTableAssociation:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::EC2::SubnetRouteTableAssociation"
+    DeletionPolicy: "Retain"
+    Properties:
+      RouteTableId: "rtb-0d2d17a54362ff142"
+      SubnetId: "subnet-08e5f4973b2c5bb1e"
+  EC2NetworkAcl:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::EC2::NetworkAcl"
+    DeletionPolicy: "Retain"
+    Properties:
+      VpcId: "vpc-0c03e4f5b6b45df24"
+      Tags: []
+  EC2RouteQa:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::EC2::Route"
+    DeletionPolicy: "Retain"
+    Properties:
+      RouteTableId: "rtb-0d2d17a54362ff142"
+      DestinationCidrBlock: "192.168.0.0/16"
+      GatewayId: "local"
+      VpcEndpointId: "local"
