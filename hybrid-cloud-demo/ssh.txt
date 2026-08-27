@@ -1,7 +1,0 @@
-ssh -i mykey.pem ec2-user@<public-ip-of-first-ec2>
-ssh -i mykey.pem ec2-user@192.168.0.192
-
-copy contents from nvirginia.pem to mykey.pem in Linux ec2 using vi editor
-
-ssh -i mykey.pem ec2-user@<private-ip-of-second-ec2>
-ssh -i mykey.pem ec2-user@192.168.100.50
